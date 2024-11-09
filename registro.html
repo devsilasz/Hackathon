@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Paciente</title>
+    <link rel="stylesheet" href="logreg.css">
     <script>
         async function registrar(event) {
             event.preventDefault();
@@ -27,20 +28,22 @@
     </script>
 </head>
 <body>
-    <h1>Registro de Paciente</h1>
-    <form id="registroForm" onsubmit="registrar(event)">
-        <input type="text" name="nome_completo" placeholder="Nome Completo" required><br>
-        <input type="date" name="data_nascimento" placeholder="Data de Nascimento" required><br>
-        <input type="text" name="sexo" placeholder="Sexo" required><br>
-        <input type="text" name="estado_civil" placeholder="Estado Civil" required><br>
-        <input type="text" name="cpf" placeholder="CPF" required><br>
-        <input type="text" name="rg_ou_documento" placeholder="RG ou Documento" required><br>
-        <input type="text" name="cartao_sus" placeholder="Cartão SUS"><br>
-        <input type="text" name="endereco_completo" placeholder="Endereço Completo" required><br>
-        <input type="text" name="telefone_contato" placeholder="Telefone Contato" required><br>
-        <input type="email" name="email" placeholder="Email" required><br>
-        <input type="password" name="senha" placeholder="Senha" required><br>
-        <button type="submit">Registrar</button>
-    </form>
+    <div class="container">
+        <h1>Registro de Paciente</h1>
+        <form id="registroForm" onsubmit="registrar(event)">
+            <input type="text" name="nome_completo" placeholder="Nome Completo" required><br>
+            <input type="date" name="data_nascimento" placeholder="Data de Nascimento" required><br>
+            <input type="text" name="sexo" placeholder="Sexo" required><br>
+            <input type="text" name="estado_civil" placeholder="Estado Civil" required><br>
+            <input type="text" name="cpf" placeholder="CPF" required><br>
+            <input type="text" name="rg_ou_documento" placeholder="RG ou Documento" required><br>
+            <input type="text" name="cartao_sus" placeholder="Cartão SUS"><br>
+            <input type="text" name="endereco_completo" placeholder="Endereço Completo" required><br>
+            <input type="text" name="telefone_contato" placeholder="Telefone Contato" required><br>
+            <input type="email" name="email" placeholder="Email" required><br>
+            <input type="password" name="senha" placeholder="Senha" required><br>
+            <button type="submit">Registrar</button>
+        </form>
+    </div>
 </body>
 </html>

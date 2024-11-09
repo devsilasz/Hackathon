@@ -1,0 +1,104 @@
+/* style.css */
+
+/* Estilo geral da página */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #e0f7fa;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Container principal */
+.container {
+    background-color: #ffffff;
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+    text-align: center;
+    overflow-y: auto;
+    max-height: 90vh;
+}
+
+/* Título */
+h1 {
+    color: #00695c;
+    font-size: 26px;
+    margin-bottom: 25px;
+}
+
+/* Estilo dos campos de entrada */
+input[type="text"],
+input[type="date"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+/* Foco nos campos */
+input[type="text"]:focus,
+input[type="date"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+    border-color: #4db6ac;
+    box-shadow: 0 0 5px rgba(77, 182, 172, 0.5);
+    outline: none;
+}
+
+/* Estilo do botão */
+button {
+    width: 100%;
+    padding: 14px;
+    background-color: #00796b;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+button:hover {
+    background-color: #004d40;
+    transform: scale(1.02);
+}
+
+button:active {
+    background-color: #003d33;
+    transform: scale(0.98);
+}
+
+/* Mensagens de alerta */
+.alert {
+    padding: 10px;
+    margin-top: 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.alert.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.alert.success {
+    background-color: #d4edda;
+    color: #155724;
+}
