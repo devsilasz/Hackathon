@@ -17,12 +17,59 @@ const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fet
 
 // Função para formatar o prompt de entrada para a IA
 const promptInput = (doencasIntolerancias, sintomas) => `
-Doenças ou Intolerâncias Prévias: ${doencasIntolerancias}
+Contexto:
+Um enfermeiro está realizando a triagem de um paciente que apresenta sintomas específicos. O objetivo é identificar três doenças principais que possam estar associadas a esses sintomas e fornecer uma sugestão de tratamento breve para cada uma.
+
+Instruções:
+- Liste apenas as 3 principais doenças relacionadas aos sintomas fornecidos, com uma descrição breve de cada uma.
+- Para cada doença, inclua um possível tratamento resumido.
+- A saída deve estar no formato:
+
+Principais doenças: 
+1. [Nome da Doença 1]: [Descrição resumida da doença]
+2. [Nome da Doença 2]: [Descrição resumida da doença]
+3. [Nome da Doença 3]: [Descrição resumida da doença]
+
+Possíveis tratamentos para as respectivas doenças: 
+1. [Tratamento resumido para Doença 1]
+2. [Tratamento resumido para Doença 2]
+3. [Tratamento resumido para Doença 3]
+
+Dados do paciente:
+Doenças ou Intolerâncias Prévias: ${doencasIntolerancias || "Não informado"}
 Sintomas do Paciente: ${sintomas}
-Possíveis doenças (REVISAR): 
 `;
 
-// Função para analisar sintomas com a IA Llama
+// Função para formatar e processar a saída da IA
+function formatarRespostaIA(textoIA, doencasIntolerancias, sintomas) {
+    // Extrair as três principais doenças e tratamentos usando expressão regular para capturar os itens numerados
+    const regexDoenca = /\d+\.\s+(.+?):\s+(.+?)(?=\d+\.\s+|$)/g;
+    const matches = [...textoIA.matchAll(regexDoenca)].slice(0, 3);
+
+    if (matches.length < 3) {
+        return "Diagnóstico não gerado corretamente. Favor revisar a resposta da IA.";
+    }
+
+    // Formatar doenças e tratamentos com quebras de linha e estrutura clara
+    const principaisDoencas = matches.map((match, index) => `${index + 1}. ${match[1].trim()}: ${match[2].trim()}`);
+    const tratamentos = matches.map((match, index) => `${index + 1}. Tratamento para ${match[1].trim()}: [Descrição do tratamento]`);
+
+    return `
+Principais doenças: 
+${principaisDoencas.join('\n')}
+
+Possíveis tratamentos para as respectivas doenças: 
+${tratamentos.join('\n')}
+
+Dados do paciente:
+Doenças ou Intolerâncias Prévias: ${doencasIntolerancias || "Não informado"}
+Sintomas do Paciente: ${sintomas}
+
+*Nota: Este diagnóstico deve ser revisado por um profissional.*
+    `.trim();
+}
+
+// Função para analisar sintomas com a IA Llama e formatar a resposta
 async function analisarSintomasComLlama(doencasIntolerancias, sintomas) {
     const prompt = promptInput(doencasIntolerancias, sintomas);
     try {
@@ -37,7 +84,7 @@ async function analisarSintomasComLlama(doencasIntolerancias, sintomas) {
                 messages: [
                     {
                         role: "user",
-                        content: prompt
+                        content: prompt  // Aqui passamos o prompt formatado
                     }
                 ]
             })
@@ -48,7 +95,10 @@ async function analisarSintomasComLlama(doencasIntolerancias, sintomas) {
         }
 
         const data = await response.json();
-        return data.choices[0].message.content;
+        const respostaCompleta = data.choices[0].message.content;
+
+        // Formata a resposta para o formato desejado
+        return formatarRespostaIA(respostaCompleta, doencasIntolerancias, sintomas);
     } catch (error) {
         console.error("Erro ao usar a API Llama:", error);
         return "Não foi possível gerar o diagnóstico.";

@@ -17,11 +17,25 @@ async function fetchPacientes() {
                 <h3>Paciente: ${paciente.nome}</h3>
                 <p><strong>Doenças ou Intolerâncias Prévias:</strong> ${paciente.doencasIntolerancias || "Não informado"}</p>
                 <p><strong>Sintomas:</strong> ${paciente.sintomas || "Aguardando sintomas..."}</p>
-                <p><strong>Diagnóstico:</strong> ${paciente.diagnostico || "Em análise..."}</p>
+                <p><strong>Diagnóstico:</strong><br> ${paciente.diagnostico || "Em análise..."}</p>
+                <label>
+                    <input type="checkbox" class="checkbox-revisao" data-id="${paciente.id}">
+                    Revisado por um profissional
+                </label>
                 <button class="resolved-button" onclick="removerPaciente(${paciente.id})">Resolvido</button>
             `;
 
             cardsContainer.appendChild(card);
+        });
+
+        // Adiciona eventos para os checkboxes
+        document.querySelectorAll('.checkbox-revisao').forEach(checkbox => {
+            checkbox.addEventListener('change', (event) => {
+                const pacienteId = event.target.dataset.id;
+                if (event.target.checked) {
+                    alert(`Diagnóstico do paciente ${pacienteId} revisado!`);
+                }
+            });
         });
     } catch (error) {
         console.error("Erro ao carregar pacientes:", error);
