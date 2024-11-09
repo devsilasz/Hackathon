@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistente de Triagem Médica</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Assistente de Triagem Médica</h1>
+        
+        <!-- Seção de Entrada na Fila -->
+        <div id="filaContainer">
+            <h2>Entrar na Fila de Atendimento</h2>
+            <input type="text" id="nomeInput" placeholder="Digite seu nome" required>
+            <button onclick="entrarNaFila()" class="btn fila-btn">Entrar na Fila</button>
+            <p id="statusFila">Sua posição na fila será exibida aqui...</p>
+        </div>
+
+        <!-- Seção de Sintomas (escondida até a vez do usuário) -->
+        <div id="sintomasContainer" style="display: none;">
+            <h2>Descreva seus principais sintomas</h2>
+            <textarea id="symptomsInput" placeholder="Digite seus sintomas aqui..." rows="4"></textarea>
+            <button id="voiceBtn" onclick="startRecording()" class="btn voice-btn">
+                <img src="mic-icon.png" alt="Microfone"> Falar Sintomas
+            </button>
+            <button onclick="enviarSintomas()" class="btn analyze-btn">Enviar Sintomas</button>
+        </div>
+
+        <!-- Tela de espera -->
+        <div id="telaEsperaContainer" style="display: none;">
+            <h2>Aguardando Atendimento</h2>
+            <p>Por favor, aguarde. Você está na fila para o atendimento médico.</p>
+        </div>
+    </div>
+
+    <script src="triagem.js"></script>
+</body>
+</html>
