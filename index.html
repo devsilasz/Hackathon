@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistente de Triagem Médica</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Assistente de Triagem Médica</h1>
+        <p class="instructions">Digite seus sintomas no campo abaixo ou use o microfone se preferir falar.</p>
+
+        <!-- Campo de entrada de texto para os sintomas -->
+        <textarea id="symptomsInput" placeholder="Digite seus sintomas aqui..." rows="4"></textarea>
+
+        <!-- Botão para reconhecimento de voz opcional -->
+        <button id="voiceBtn" onclick="startRecording()" class="btn voice-btn">
+            <img src="mic-icon.png" alt="Microfone"> Falar Sintomas
+        </button>
+
+        <!-- Botão para iniciar a triagem -->
+        <button id="analyzeBtn" onclick="analyzeSymptoms()" class="btn analyze-btn">
+            Analisar Sintomas
+        </button>
+
+        <!-- Área para exibir o diagnóstico -->
+        <div id="diagnosisResult" class="diagnosis-box">
+            <p>Diagnóstico:</p>
+            <span id="diagnosisText">Nenhum diagnóstico ainda.</span>
+            <button onclick="speakResults()" class="audio-btn" title="Ouvir Diagnóstico">
+                <img src="speaker-icon.png" alt="Ícone de alto-falante">
+            </button>
+        </div>
+    </div>
+
+    <script src="triagem.js"></script>
+</body>
+</html>
