@@ -17,28 +17,29 @@
     </nav>
     <div class="container">
         <h1 class="title">Assistente de Triagem Médica</h1>
-        <p class="instructions">Digite seus sintomas no campo abaixo ou use o microfone se preferir falar.</p>
+        
+        <!-- Seção de Entrada na Fila -->
+        <div id="filaContainer">
+            <h2>Entrar na Fila de Atendimento</h2>
+            <input type="text" id="nomeInput" placeholder="Digite seu nome" required>
+            <button onclick="entrarNaFila()" class="btn fila-btn">Entrar na Fila</button>
+            <p id="statusFila">Sua posição na fila será exibida aqui...</p>
+        </div>
 
-        <!-- Campo de entrada de texto para os sintomas -->
-        <textarea id="symptomsInput" placeholder="Digite seus sintomas aqui..." rows="4"></textarea>
-
-        <!-- Botão para reconhecimento de voz opcional -->
-        <button id="voiceBtn" onclick="startRecording()" class="btn voice-btn">
-            <img src="mic-icon.png" alt="Microfone"> Falar Sintomas
-        </button>
-
-        <!-- Botão para iniciar a triagem -->
-        <button id="analyzeBtn" onclick="analyzeSymptoms()" class="btn analyze-btn">
-            Analisar Sintomas
-        </button>
-
-        <!-- Área para exibir o diagnóstico -->
-        <div id="diagnosisResult" class="diagnosis-box">
-            <p>Diagnóstico:</p>
-            <span id="diagnosisText">Nenhum diagnóstico ainda.</span>
-            <button onclick="speakResults()" class="audio-btn" title="Ouvir Diagnóstico">
-                <img src="speaker-icon.png" alt="Ícone de alto-falante">
+        <!-- Seção de Sintomas (escondida até a vez do usuário) -->
+        <div id="sintomasContainer" style="display: none;">
+            <h2>Descreva seus principais sintomas</h2>
+            <textarea id="symptomsInput" placeholder="Digite seus sintomas aqui..." rows="4"></textarea>
+            <button id="voiceBtn" onclick="startRecording()" class="btn voice-btn">
+                <img src="mic-icon.png" alt="Microfone"> Falar Sintomas
             </button>
+            <button onclick="enviarSintomas()" class="btn analyze-btn">Enviar Sintomas</button>
+        </div>
+
+        <!-- Tela de espera -->
+        <div id="telaEsperaContainer" style="display: none;">
+            <h2>Aguardando Atendimento</h2>
+            <p>Por favor, aguarde. Você está na fila para o atendimento médico.</p>
         </div>
     </div>
 

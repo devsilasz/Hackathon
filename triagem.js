@@ -1,13 +1,48 @@
-// triagem.js
-
 let recognition;
 const symptomsInputElement = document.getElementById("symptomsInput");
-const diagnosisTextElement = document.getElementById("diagnosisText");
+const statusFilaElement = document.getElementById("statusFila");
+const nomeInputElement = document.getElementById("nomeInput");
 
-// Chave de API Groq embutida
 const GROQ_API_KEY = "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";
+let userId;
 
-// Função para iniciar o reconhecimento de voz como alternativa de entrada
+// Função para entrar na fila
+async function entrarNaFila() {
+    const nome = nomeInputElement.value.trim();
+    if (!nome) {
+        alert("Por favor, insira seu nome para entrar na fila.");
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost:3000/fila', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nome })
+        });
+        const data = await response.json();
+        userId = data.id;
+
+        console.log("User ID:", userId);  // Exibe o userId no console para testes
+
+        localStorage.setItem("userId", userId);
+        statusFilaElement.textContent = `Você entrou na fila com o ID ${userId}.`;
+        mostrarSintomas();
+    } catch (error) {
+        console.error("Erro ao entrar na fila:", error);
+    }
+}
+
+// Função para exibir a interface de sintomas
+function mostrarSintomas() {
+    document.getElementById('filaContainer').style.display = 'none';
+    document.getElementById('sintomasContainer').style.display = 'block';
+}
+
+// Restante do código permanece o mesmo...
+
+
+// Função para iniciar o reconhecimento de voz
 function startRecording() {
     if (!("webkitSpeechRecognition" in window)) {
         alert("API de reconhecimento de voz não é suportada neste navegador.");
@@ -25,7 +60,7 @@ function startRecording() {
 
     recognition.onresult = function(event) {
         const text = event.results[0][0].transcript;
-        symptomsInputElement.value = text; // Exibir o texto reconhecido no campo de sintomas
+        symptomsInputElement.value = text;
     };
 
     recognition.onerror = function(event) {
@@ -78,34 +113,28 @@ function formatDiagnosisText(diagnosisText) {
 // Função principal para processar os sintomas com a API da Groq
 async function analyzeSymptoms() {
     const symptomsText = symptomsInputElement.value.trim();
-
     if (!symptomsText) {
         alert("Por favor, digite ou fale seus sintomas antes de prosseguir.");
         return;
     }
 
-    const groqAnalysis = await analyzeSymptomsWithGroq(symptomsText);
-    if (!groqAnalysis) {
-        diagnosisTextElement.textContent = "Erro na análise da API da Groq";
-        return;
-    }
+    try {
+        // Envia os sintomas para o servidor para atualizar o status
+        await fetch(`http://localhost:3000/fila/${userId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ sintomas: symptomsText })
+        });
 
-    // Insere o diagnóstico formatado como HTML
-    diagnosisTextElement.innerHTML = `Diagnóstico:<br>${formatDiagnosisText(groqAnalysis)}`;
-    localStorage.setItem("diagnosisResult", groqAnalysis);
+        alert("Sintomas enviados com sucesso.");
+        redirecionarParaEspera();
+    } catch (error) {
+        console.error("Erro ao enviar sintomas:", error);
+    }
 }
 
-// Função para sintetizar a fala do diagnóstico, acessível pelo botão de áudio
-function speakResults() {
-    const synthesis = window.speechSynthesis;
-    const diagnosisResult = localStorage.getItem("diagnosisResult");
-
-    if (!diagnosisResult) {
-        alert("Nenhum diagnóstico foi gerado ainda.");
-        return;
-    }
-
-    const utterance = new SpeechSynthesisUtterance(diagnosisResult);
-    utterance.lang = "pt-BR";
-    synthesis.speak(utterance);
+// Função para redirecionar para a tela de espera
+function redirecionarParaEspera() {
+    document.getElementById('sintomasContainer').style.display = 'none';
+    document.getElementById('telaEsperaContainer').style.display = 'block';
 }
