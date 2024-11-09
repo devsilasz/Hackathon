@@ -15,93 +15,91 @@ const LLAMA_API_KEY = "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"
 // Configuração dinâmica para importar node-fetch
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
-// Função para formatar o prompt de entrada para a IA
-const promptInput = (doencasIntolerancias, sintomas) => `
-Contexto:
-Um enfermeiro está realizando a triagem de um paciente que apresenta sintomas específicos. O objetivo é identificar três doenças principais que possam estar associadas a esses sintomas e fornecer uma sugestão de tratamento breve para cada uma.
-
-Instruções:
-- Liste apenas as 3 principais doenças relacionadas aos sintomas fornecidos, com uma descrição breve de cada uma.
-- Para cada doença, inclua um possível tratamento resumido.
-- A saída deve estar no formato:
-
-Principais doenças: 
-1. [Nome da Doença 1]: [Descrição resumida da doença]
-2. [Nome da Doença 2]: [Descrição resumida da doença]
-3. [Nome da Doença 3]: [Descrição resumida da doença]
-
-Possíveis tratamentos para as respectivas doenças: 
-1. [Tratamento resumido para Doença 1]
-2. [Tratamento resumido para Doença 2]
-3. [Tratamento resumido para Doença 3]
-
-Dados do paciente:
-Doenças ou Intolerâncias Prévias: ${doencasIntolerancias || "Não informado"}
-Sintomas do Paciente: ${sintomas}
-`;
-
-// Função para formatar e processar a saída da IA
-function formatarRespostaIA(textoIA, doencasIntolerancias, sintomas) {
-    // Extrair as três principais doenças e tratamentos usando expressão regular para capturar os itens numerados
+// Função para processar e formatar a resposta da IA, limitando a três doenças e tratamentos
+function formatarRespostaIA(textoIA) {
     const regexDoenca = /\d+\.\s+(.+?):\s+(.+?)(?=\d+\.\s+|$)/g;
-    const matches = [...textoIA.matchAll(regexDoenca)].slice(0, 3);
+    const matches = [...textoIA.matchAll(regexDoenca)].slice(0, 3); // Limita a 3 itens
 
     if (matches.length < 3) {
-        return "Diagnóstico não gerado corretamente. Favor revisar a resposta da IA.";
+        return { error: "Diagnóstico não gerado corretamente. Favor revisar a resposta da IA." };
     }
 
-    // Formatar doenças e tratamentos com quebras de linha e estrutura clara
-    const principaisDoencas = matches.map((match, index) => `${index + 1}. ${match[1].trim()}: ${match[2].trim()}`);
-    const tratamentos = matches.map((match, index) => `${index + 1}. Tratamento para ${match[1].trim()}: [Descrição do tratamento]`);
+    // Extrai e organiza doenças e tratamentos em um objeto estruturado
+    const diagnostico = {
+        doencas: matches.map((match, index) => ({
+            nome: match[1].trim(),
+            descricao: match[2].trim(),
+            tratamento: `Tratamento para ${match[1].trim()}: [Descrição do tratamento]`
+        }))
+    };
 
-    return `
-Principais doenças: 
-${principaisDoencas.join('\n')}
-
-Possíveis tratamentos para as respectivas doenças: 
-${tratamentos.join('\n')}
-
-Dados do paciente:
-Doenças ou Intolerâncias Prévias: ${doencasIntolerancias || "Não informado"}
-Sintomas do Paciente: ${sintomas}
-
-*Nota: Este diagnóstico deve ser revisado por um profissional.*
-    `.trim();
+    return diagnostico;
 }
 
-// Função para analisar sintomas com a IA Llama e formatar a resposta
 async function analisarSintomasComLlama(doencasIntolerancias, sintomas) {
-    const prompt = promptInput(doencasIntolerancias, sintomas);
+    const prompt1 = `
+    Contexto:
+    Você é um enfermeiro que está realizando a triagem de um paciente com sintomas específicos. O objetivo é identificar as três principais doenças possíveis associadas a esses sintomas e fornecer uma sugestão de tratamento breve para cada uma.
+    
+    Instrução:
+    - Responda listando apenas as 3 principais doenças que possam estar relacionadas aos sintomas.
+    - Para cada doença, inclua um possível tratamento resumido.
+    
+    Organize a resposta exatamente no seguinte formato:
+    Principais doenças: 
+    1. [Nome da Doença 1]: [Descrição breve]
+    2. [Nome da Doença 2]: [Descrição breve]
+    3. [Nome da Doença 3]: [Descrição breve]
+    
+    Possíveis tratamentos para as respectivas doenças: 
+    1. Tratamento para [Nome da Doença 1]: [Descrição resumida do tratamento]
+    2. Tratamento para [Nome da Doença 2]: [Descrição resumida do tratamento]
+    3. Tratamento para [Nome da Doença 3]: [Descrição resumida do tratamento]
+    `;
+
+    const input = `
+    Dados do paciente:
+    - Doenças ou Intolerâncias Prévias: ${doencasIntolerancias || "Não informado"}
+    - Sintomas do Paciente: ${sintomas}
+    `.trim();
+    
+    const params = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${LLAMA_API_KEY}`
+        },
+        body: JSON.stringify({
+            model: "llama3-8b-8192",
+            messages: [
+                {
+                    role: "system",
+                    content: prompt1
+                },
+                {
+                    role: "user",
+                    content: input
+                }
+            ]
+        })
+    };
+
     try {
-        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${LLAMA_API_KEY}`
-            },
-            body: JSON.stringify({
-                model: "llama3-8b-8192",
-                messages: [
-                    {
-                        role: "user",
-                        content: prompt  // Aqui passamos o prompt formatado
-                    }
-                ]
-            })
-        });
+        // Envia a requisição usando o objeto params
+        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', params);
 
         if (!response.ok) {
             throw new Error('Erro ao se comunicar com a API Llama');
         }
 
         const data = await response.json();
-        const respostaCompleta = data.choices[0].message.content;
+        const respostaCompleta = data.choices[0]?.message?.content;
 
         // Formata a resposta para o formato desejado
-        return formatarRespostaIA(respostaCompleta, doencasIntolerancias, sintomas);
+        return formatarRespostaIA(respostaCompleta);
     } catch (error) {
         console.error("Erro ao usar a API Llama:", error);
-        return "Não foi possível gerar o diagnóstico.";
+        return { error: "Não foi possível gerar o diagnóstico." };
     }
 }
 
