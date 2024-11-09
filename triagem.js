@@ -68,6 +68,13 @@ async function analyzeSymptomsWithGroq(symptoms) {
     }
 }
 
+// Função para formatar o texto do diagnóstico em parágrafos
+function formatDiagnosisText(diagnosisText) {
+    // Divide o texto em parágrafos onde há ponto final seguido de espaço ou nova linha
+    const paragraphs = diagnosisText.split(/(?:\. |\n)/g);
+    return paragraphs.map(paragraph => `<p>${paragraph.trim()}</p>`).join("");
+}
+
 // Função principal para processar os sintomas com a API da Groq
 async function analyzeSymptoms() {
     const symptomsText = symptomsInputElement.value.trim();
@@ -83,7 +90,8 @@ async function analyzeSymptoms() {
         return;
     }
 
-    diagnosisTextElement.textContent = `Diagnóstico: ${groqAnalysis}`;
+    // Insere o diagnóstico formatado como HTML
+    diagnosisTextElement.innerHTML = `Diagnóstico:<br>${formatDiagnosisText(groqAnalysis)}`;
     localStorage.setItem("diagnosisResult", groqAnalysis);
 }
 
