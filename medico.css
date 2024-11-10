@@ -1,53 +1,120 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
+/* Resetando estilos padrão do navegador */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Navbar */
+.navbar {
+    width: 100%;
+    background-color: #003366; /* Azul escuro */
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
 }
 
+.navbar-brand {
+    color: #ffffff;
+    font-size: 26px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand .logo {
+    width: 45px;
+    margin-right: 10px;
+}
+
+.navbar-menu {
+    list-style: none;
+    display: flex;
+    gap: 25px;
+}
+
+.navbar-menu li {
+    font-size: 18px;
+}
+
+.navbar-menu a {
+    color: #ffffff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.navbar-menu a:hover {
+    color: #66b2ff; /* Azul claro */
+}
+
+/* Container principal */
 .container {
-    width: 80%;
-    margin-top: 20px;
-}
-
-.title {
+    background-color: #ffffff; /* Fundo branco */
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 1200px;
     text-align: center;
-    margin-bottom: 20px;
-    font-size: 24px;
+    margin-top: 100px; /* Espaço para a navbar fixa */
+    flex-grow: 1; /* Garante que o conteúdo ocupe o espaço disponível */
 }
 
+/* Estilo do título */
+.title {
+    font-size: 28px;
+    color: #003366;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+/* Cards dos pacientes */
 .cards-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 20px;
     justify-content: center;
 }
 
+/* Estilo de cada card */
 .card {
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 16px;
-    width: 300px;
+    padding: 20px;
+    width: 280px;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px); /* Efeito de hover */
 }
 
 .card h3 {
     margin: 0 0 8px;
+    font-size: 18px;
 }
 
 .card p {
     font-size: 14px;
     color: #666666;
-    text-align: center;
+    margin-bottom: 12px;
 }
 
+/* Botões de risco */
 .risk-level {
-    margin-top: 12px;
     display: flex;
     gap: 10px;
+    margin-top: 10px;
 }
 
 .risk-button {
@@ -59,21 +126,40 @@ body {
     font-size: 14px;
 }
 
-.resolved-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-.resolved-button:hover {
-    background-color: #45a049;
-}
-
-
 .risk-button.low { background-color: #4caf50; }
 .risk-button.medium { background-color: #ff9800; }
 .risk-button.high { background-color: #f44336; }
+
+.risk-button:hover {
+    opacity: 0.8;
+}
+
+/* Estilos do footer */
+.footer {
+    background-color: #003366; /* Azul escuro */
+    color: #ffffff;
+    text-align: center;
+    padding: 20px 0;
+    width: 100%;
+    margin-top: 40px;
+}
+
+.footer-content {
+    font-size: 14px;
+}
+
+.footer a {
+    color: #66b2ff; /* Azul claro */
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+/* Logo */
+.logo {
+    width: 150px;
+    height: auto;
+    margin-bottom: 20px;
+}
