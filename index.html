@@ -7,6 +7,17 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <img src="img/logo.png" alt="Logo" class="logo"> Assistente de Triagem Médica
+        </div>
+        <ul class="navbar-menu">
+            <li><a href="#">Memória</a></li>
+            <li><a href="#">Exportar Dados</a></li>
+            <li><a href="#">Configurações</a></li>
+        </ul>
+    </nav>
+    
     <div class="container">
         <h1 class="title">Assistente de Triagem Médica</h1>
         
@@ -22,10 +33,10 @@
         <div id="sintomasContainer" style="display: none;">
             <h2>Descreva seus principais sintomas</h2>
             <textarea id="symptomsInput" placeholder="Digite seus sintomas aqui..." rows="4"></textarea>
-            <button id="voiceBtn" onclick="startRecording()" class="btn voice-btn">
-                <img src="mic-icon.png" alt="Microfone"> Falar Sintomas
+            <button id="voiceBtn" onclick="startRecording()" class="btn-standard voice-btn">
+                <img src="img/microfone.png" alt="Microfone"> Falar Sintomas
             </button>
-            <button onclick="enviarSintomas()" class="btn analyze-btn">Enviar Sintomas</button>
+            <button onclick="enviarSintomas()" class="btn-standard analyze-btn">Enviar Sintomas</button>
         </div>
 
         <!-- Tela de espera -->
@@ -34,6 +45,18 @@
             <p>Por favor, aguarde. Você está na fila para o atendimento médico.</p>
         </div>
     </div>
+
+    <!-- Script para carregar o footer dinamicamente -->
+    <script>
+        // Função para carregar o footer
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => {
+                // Insere o conteúdo do footer no final do body
+                document.body.insertAdjacentHTML('beforeend', data);
+            })
+            .catch(error => console.error('Erro ao carregar o footer:', error));
+    </script>
 
     <script src="triagem.js"></script>
 </body>

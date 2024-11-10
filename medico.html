@@ -7,12 +7,53 @@
     <link rel="stylesheet" href="medico.css">
 </head>
 <body>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <img src="img/logo.png" alt="Logo" class="logo"> Assistente de Triagem Médica
+        </div>
+        <ul class="navbar-menu">
+            <li><a href="#">Memória</a></li>
+            <li><a href="#">Exportar Dados</a></li>
+            <li><a href="#">Configurações</a></li>
+        </ul>
+    </nav>
+
     <div class="container">
         <h1 class="title">Painel Médico - Fila de Atendimento</h1>
+
+        <!-- Cards dos pacientes -->
         <div id="cardsContainer" class="cards-container">
-            <!-- Os cards dos pacientes serão inseridos aqui pelo JavaScript -->
+            <!-- Exemplo de um card -->
+            <div class="card">
+                <h3>Paciente: Jonathan</h3>
+                <p><strong>Doenças ou Intolerâncias Prévias:</strong> Não informado</p>
+                <p><strong>Sintomas:</strong> Tosse</p>
+                <p><strong>Diagnóstico:</strong> [Diagnóstico do médico]</p>
+                
+                <!-- Botões de risco -->
+                <div class="risk-level">
+                    <button class="risk-button low">Baixo Risco</button>
+                    <button class="risk-button medium">Médio Risco</button>
+                    <button class="risk-button high">Alto Risco</button>
+                </div>
+                
+                <button class="resolved-button">Revisado por um profissional</button>
+            </div>
         </div>
     </div>
+
+    <!-- Script para carregar o footer dinamicamente -->
+    <script>
+        // Função para carregar o footer
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => {
+                // Insere o conteúdo do footer no final do body
+                document.body.insertAdjacentHTML('beforeend', data);
+            })
+            .catch(error => console.error('Erro ao carregar o footer:', error));
+    </script>
+
     <script src="medico.js"></script>
 </body>
 </html>
