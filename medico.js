@@ -9,12 +9,13 @@ async function fetchPacientes() {
         // Limpa o container antes de adicionar novos cards
         cardsContainer.innerHTML = '';
 
-        pacientes.forEach(paciente => {
+        pacientes.forEach((paciente, index) => {
             const card = document.createElement("div");
             card.classList.add("card");
 
+            // Formatação com numeração, dados e separador para cada paciente
             card.innerHTML = `
-                <h3>Paciente: ${paciente.nome}</h3>
+                <h3>${index + 1}. Paciente: ${paciente.nome}</h3>
                 <p><strong>Doenças ou Intolerâncias Prévias:</strong> ${paciente.doencasIntolerancias || "Não informado"}</p>
                 <p><strong>Sintomas:</strong> ${paciente.sintomas || "Aguardando sintomas..."}</p>
                 <p><strong>Diagnóstico:</strong><br> ${paciente.diagnostico || "Em análise..."}</p>
@@ -23,6 +24,7 @@ async function fetchPacientes() {
                     Revisado por um profissional
                 </label>
                 <button class="resolved-button" onclick="removerPaciente(${paciente.id})">Resolvido</button>
+                <br><hr style="border-top: 1px dashed #000;">
             `;
 
             cardsContainer.appendChild(card);

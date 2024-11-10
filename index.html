@@ -10,10 +10,28 @@
     <div class="container">
         <h1 class="title">Assistente de Triagem Médica</h1>
         
-        <!-- Seção de Entrada na Fila -->
-        <div id="filaContainer">
+        <!-- Seção de Registro do Paciente -->
+        <div id="registroContainer">
+            <h2>Registro de Paciente</h2>
+            <form id="registroForm">
+                <input type="text" id="nomeCompleto" placeholder="Nome Completo" required>
+                <input type="date" id="dataNascimento" required>
+                <input type="text" id="sexo" placeholder="Sexo" required>
+                <input type="text" id="estadoCivil" placeholder="Estado Civil" required>
+                <input type="text" id="cpf" placeholder="CPF" required>
+                <input type="text" id="rgOuDocumento" placeholder="RG ou Documento" required>
+                <input type="text" id="cartaoSus" placeholder="Cartão SUS">
+                <input type="text" id="enderecoCompleto" placeholder="Endereço Completo" required>
+                <input type="text" id="telefoneContato" placeholder="Telefone Contato" required>
+                <input type="email" id="email" placeholder="Email" required>
+                <button type="button" onclick="registrarPaciente()" class="btn">Registrar Paciente</button>
+            </form>
+            <p id="statusRegistro">Preencha os dados e clique em "Registrar Paciente".</p>
+        </div>
+
+        <!-- Seção de Entrada na Fila (aparece após registro) -->
+        <div id="filaContainer" style="display: none;">
             <h2>Entrar na Fila de Atendimento</h2>
-            <input type="text" id="nomeInput" placeholder="Digite seu nome" required>
             <button onclick="entrarNaFila()" class="btn fila-btn">Entrar na Fila</button>
             <p id="statusFila">Sua posição na fila será exibida aqui...</p>
         </div>
