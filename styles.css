@@ -247,3 +247,75 @@ button:hover {
     height: 20px;
     margin-right: 8px;
 }
+
+/* Ajusta o tamanho dos ícones dentro de inputs e botões */
+input, select {
+    font-size: 16px; /* Tamanho da fonte para entrada de dados */
+    padding-left: 10px; /* Espaço à esquerda para não sobrepor o ícone */
+}
+
+input[type="date"],
+input[type="email"],
+select {
+    background: url('img/icone-date.png') no-repeat left center;
+    background-size: 20px 20px; /* Define o tamanho do ícone */
+    padding-left: 30px; /* Garante que o ícone não sobreponha o texto */
+}
+
+input[type="text"] {
+    background: url('img/icone-email.png') no-repeat left center;
+    background-size: 20px 20px;
+    padding-left: 30px;
+}
+
+/* Ajustes de tamanho e alinhamento para o ícone do microfone */
+#voiceBtn img {
+    width: 20px; /* Ajusta o tamanho da imagem do microfone */
+    height: 20px;
+}
+
+#filaContainer .fila-btn {
+    display: block;
+    margin: 20px auto;
+}
+
+#statusFila {
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+/* Centralizar título */
+.title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Alinhar os botões verticalmente */
+#opcoesContainer {
+    display: flex;
+    flex-direction: column; /* Exibir os botões em coluna */
+    align-items: center; /* Centralizar os botões */
+    gap: 15px; /* Espaço entre os botões */
+    margin-top: 20px;
+}
+
+/* Estilo dos botões */
+#opcoesContainer .btn {
+    width: 200px; /* Ajuste o tamanho conforme necessário */
+    margin: 10px 0; /* Espaço entre os botões */
+}
+
+/* Estilo para o botão "Emergência" */
+#opcoesContainer .btn-danger {
+    background-color: red; /* Cor de fundo vermelha */
+    color: white; /* Cor do texto em branco */
+    border: none; /* Remove a borda */
+    padding: 10px 20px; /* Ajusta o padding */
+    font-size: 16px; /* Ajusta o tamanho da fonte */
+    cursor: pointer; /* Altera o cursor ao passar sobre o botão */
+    border-radius: 5px; /* Adiciona bordas arredondadas */
+}
+
+#opcoesContainer .btn-danger:hover {
+    background-color: darkred; /* Cor mais escura ao passar o mouse */
+}
