@@ -30,7 +30,7 @@ Principais doenças:
 2. [Nome da Doença 2]: [Descrição resumida da doença]
 3. [Nome da Doença 3]: [Descrição resumida da doença]
 
-Possíveis tratamentos para as respectivas doenças: 
+Possíveis tratamentos para as respectivas doenças:  
 1. Tratamento resumido para Doença 1: [Descrição resumida do tratamento para Doença 1]
 2. Tratamento resumido para Doença 2: [Descrição resumida do tratamento para Doença 2]
 3. Tratamento resumido para Doença 3: [Descrição resumida do tratamento para Doença 3]
@@ -41,7 +41,7 @@ Sintomas do Paciente: ${sintomas}
 `;
 
 
-// Função para formatar e processar a saída da IA
+// Função para formatar a saída da IA
 function formatarRespostaIA(textoIA, doencasIntolerancias, sintomas) {
     // Expressão regular para capturar doenças e tratamentos
     const regexDoencas = /(\d+)\.\s+(.+?):\s+(.+?)(?=\n|$)/g;
@@ -57,9 +57,9 @@ function formatarRespostaIA(textoIA, doencasIntolerancias, sintomas) {
         descricao: match[3].trim(),
     }));
 
-    // Formatando doenças e tratamentos em um output claro e conciso
-    const principaisDoencas = doencas.map((doenca, index) => `${index + 1}. ${doenca.nome}: ${doenca.descricao}`);
-    const tratamentosFormatados = tratamentos.map((tratamento, index) => `${index + 1}. Tratamento resumido para ${tratamento.nome}: ${tratamento.descricao}`);
+    // Limitar o número de doenças e tratamentos a 3
+    const principaisDoencas = doencas.slice(0, 3).map((doenca, index) => `${index + 1}. ${doenca.nome}: ${doenca.descricao}`);
+    const tratamentosFormatados = tratamentos.slice(0, 3).map((tratamento, index) => `${index + 1}. Tratamento resumido para ${tratamento.nome}: ${tratamento.descricao}`);
 
     return `
 Doenças ou Intolerâncias Prévias: ${doencasIntolerancias || "Não informado"}
@@ -74,6 +74,7 @@ ${tratamentosFormatados.join('\n')}
 *Nota: Este diagnóstico deve ser revisado por um profissional.*
     `.trim();
 }
+
 
 
 
