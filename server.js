@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
+const pool = require('./db'); // Importa o pool de conexões com o banco de dados
 
 const app = express();
 app.use(bodyParser.json());
@@ -25,10 +26,7 @@ Instruções:
 - Para cada doença, inclua um possível tratamento resumido com base nas melhores práticas médicas.
 - A saída deve estar no formato:
 
-Principais doenças: 
-1. [Nome da Doença 1]: [Descrição resumida da doença]
-2. [Nome da Doença 2]: [Descrição resumida da doença]
-3. [Nome da Doença 3]: [Descrição resumida da doença]
+- Organize a resposta exatamente no seguinte formato:
 
 Possíveis tratamentos para as respectivas doenças:  
 1. Tratamento resumido para Doença 1: [Descrição resumida do tratamento para Doença 1]
@@ -104,25 +102,33 @@ async function analisarSintomasComLlama(doencasIntolerancias, sintomas) {
         }
 
         const data = await response.json();
-        const respostaCompleta = data.choices[0].message.content;
-
-        // Formata a resposta para o formato desejado
-        return formatarRespostaIA(respostaCompleta, doencasIntolerancias, sintomas);
+        return data.choices[0].message.content;
     } catch (error) {
         console.error("Erro ao usar a API Llama:", error);
         return "Não foi possível gerar o diagnóstico.";
     }
 }
 
-// Função para atualizar as posições na fila
-function atualizarPosicoes() {
-    filaAtendimento.forEach((usuario, index) => {
-        usuario.posicao = index + 1;
-        usuario.status = usuario.posicao === 1 ? 'pronto' : 'esperando';
-    });
-}
+// Endpoint para registrar um novo paciente
+app.post('/registro', async (req, res) => {
+    const { nome_completo, data_nascimento, sexo, estado_civil, cpf, rg_ou_documento, cartao_sus, endereco_completo, telefone_contato, email } = req.body;
 
-// Endpoint para adicionar usuário na fila
+    try {
+        const result = await pool.query(
+            `INSERT INTO Paciente (nome_completo, data_nascimento, sexo, estado_civil, cpf, rg_ou_documento, cartao_sus, endereco_completo, telefone_contato, email)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+             RETURNING id_paciente`,
+            [nome_completo, data_nascimento, sexo, estado_civil, cpf, rg_ou_documento, cartao_sus, endereco_completo, telefone_contato, email]
+        );
+
+        res.status(201).json({ message: "Paciente registrado com sucesso", id: result.rows[0].id_paciente });
+    } catch (error) {
+        console.error("Erro ao registrar paciente:", error);
+        res.status(500).json({ message: "Erro ao registrar paciente", error });
+    }
+});
+
+// Endpoint para adicionar usuário na fila de triagem
 app.post('/fila', (req, res) => {
     const { nome } = req.body;
     const novoUsuario = {
@@ -139,17 +145,13 @@ app.post('/fila', (req, res) => {
     res.status(201).json(novoUsuario);
 });
 
-// Endpoint para visualizar fila completa
-app.get('/fila', (req, res) => {
-    res.json(filaAtendimento);
-});
-
-// Endpoint para visualizar informações de um usuário na fila
-app.get('/fila/:id', (req, res) => {
-    const usuario = filaAtendimento.find(u => u.id === parseInt(req.params.id));
-    if (!usuario) return res.status(404).json({ message: "Usuário não encontrado" });
-    res.json(usuario);
-});
+// Função para atualizar as posições na fila
+function atualizarPosicoes() {
+    filaAtendimento.forEach((usuario, index) => {
+        usuario.posicao = index + 1;
+        usuario.status = usuario.posicao === 1 ? 'pronto' : 'esperando';
+    });
+}
 
 // Endpoint para atualizar sintomas e gerar diagnóstico com a IA
 app.put('/fila/:id', async (req, res) => {
@@ -168,13 +170,6 @@ app.put('/fila/:id', async (req, res) => {
     res.json({ message: "Sintomas e diagnóstico atualizados com sucesso", usuario });
 });
 
-// Endpoint para remover um usuário da fila
-app.delete('/fila/:id', (req, res) => {
-    filaAtendimento = filaAtendimento.filter(u => u.id !== parseInt(req.params.id));
-    atualizarPosicoes();
-    res.json({ message: "Usuário removido da fila" });
-});
-
 // Configuração para servir arquivos estáticos
 app.use(express.static(path.join(__dirname)));
 
@@ -182,4 +177,3 @@ const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });
-

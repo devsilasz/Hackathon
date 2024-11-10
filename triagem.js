@@ -1,16 +1,47 @@
 let recognition;
 const symptomsInputElement = document.getElementById("symptomsInput");
 const statusFilaElement = document.getElementById("statusFila");
-const nomeInputElement = document.getElementById("nomeInput");
-
-const GROQ_API_KEY = "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";
 let userId;
+
+// Função para registrar o paciente
+async function registrarPaciente() {
+    const paciente = {
+        nome_completo: document.getElementById("nomeCompleto").value.trim(),
+        data_nascimento: document.getElementById("dataNascimento").value,
+        sexo: document.getElementById("sexo").value.trim(),
+        estado_civil: document.getElementById("estadoCivil").value.trim(),
+        cpf: document.getElementById("cpf").value.trim(),
+        rg_ou_documento: document.getElementById("rgOuDocumento").value.trim(),
+        cartao_sus: document.getElementById("cartaoSus").value.trim(),
+        endereco_completo: document.getElementById("enderecoCompleto").value.trim(),
+        telefone_contato: document.getElementById("telefoneContato").value.trim(),
+        email: document.getElementById("email").value.trim(),
+    };
+
+    try {
+        const response = await fetch('http://localhost:3000/registro', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(paciente)
+        });
+        const data = await response.json();
+
+        if (data.id) {
+            userId = data.id;
+            console.log("ID do paciente registrado:", userId);
+            statusFilaElement.textContent = data.message;
+            mostrarFila();
+        }
+    } catch (error) {
+        console.error("Erro ao registrar paciente:", error);
+        statusFilaElement.textContent = "Erro ao registrar paciente.";
+    }
+}
 
 // Função para entrar na fila
 async function entrarNaFila() {
-    const nome = nomeInputElement.value.trim();
-    if (!nome) {
-        alert("Por favor, insira seu nome para entrar na fila.");
+    if (!userId) {
+        alert("Por favor, registre-se primeiro.");
         return;
     }
 
@@ -18,19 +49,22 @@ async function entrarNaFila() {
         const response = await fetch('http://localhost:3000/fila', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nome })
+            body: JSON.stringify({ nome: document.getElementById("nomeCompleto").value })
         });
         const data = await response.json();
-        userId = data.id;
 
-        console.log("User ID:", userId);  // Exibe o userId no console para testes
-
-        localStorage.setItem("userId", userId);
-        statusFilaElement.textContent = `Você entrou na fila com o ID ${userId}.`;
+        localStorage.setItem("userId", data.id);
+        statusFilaElement.textContent = `Você entrou na fila com o ID ${data.id}.`;
         mostrarSintomas();
     } catch (error) {
         console.error("Erro ao entrar na fila:", error);
     }
+}
+
+// Função para exibir a interface de fila
+function mostrarFila() {
+    document.getElementById('registroContainer').style.display = 'none';
+    document.getElementById('filaContainer').style.display = 'block';
 }
 
 // Função para exibir a interface de sintomas
@@ -38,9 +72,6 @@ function mostrarSintomas() {
     document.getElementById('filaContainer').style.display = 'none';
     document.getElementById('sintomasContainer').style.display = 'block';
 }
-
-// Restante do código permanece o mesmo...
-
 
 // Função para iniciar o reconhecimento de voz
 function startRecording() {
@@ -80,7 +111,6 @@ async function enviarSintomas() {
     }
 
     try {
-        // Envia os sintomas para o servidor para atualizar o status
         await fetch(`http://localhost:3000/fila/${userId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
